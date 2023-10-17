@@ -18,9 +18,18 @@
   > View on GitHub: https://tsch.js.org/3312
 */
 
+function someFunction(name: string, age: number, first: boolean)  {
+  return 'wow'
+}
+
+type NameType = MyParameters<typeof someFunction>[2]
+
 /* _____________ Your Code Here _____________ */
 
-type MyParameters<T extends (...args: any[]) => any> = any
+type MyParameters<T extends Function> =
+  T extends (...args: infer U) => unknown
+  ? U
+  : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
