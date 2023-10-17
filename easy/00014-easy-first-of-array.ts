@@ -22,7 +22,12 @@
 
 /* _____________ Your Code Here _____________ */
 
-type First<T extends any[]> = any
+type First5<T extends unknown[]> = T['length'] extends 0 ? never : T[0]
+type First2<T extends unknown[]> = T extends [] ? never : T[0]
+type First3<T extends unknown[]> = T extends never[] ? never : T[0]
+type First4<T extends unknown[]> = T extends [] ? never : T[0]
+type First6<T extends unknown[]> = T extends [infer Head, ...any[]] ? Head : never
+type First<T extends unknown[]> = T[0] extends T[number] ? T[0] : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -47,3 +52,4 @@ type errors = [
   > View solutions: https://tsch.js.org/14/solutions
   > More Challenges: https://tsch.js.org
 */
+
