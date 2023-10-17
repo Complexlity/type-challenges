@@ -20,7 +20,14 @@
 
 /* _____________ Your Code Here _____________ */
 
-type TupleToObject<T extends readonly any[]> = any
+type TupleToObject<T extends readonly PropertyKey[]> = {
+  [P in T[number]]: P
+}
+
+
+const tuple2 = ['tesla', 'model 3', 'model X', 'model Y'] as const
+
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
