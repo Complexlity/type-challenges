@@ -33,8 +33,22 @@
 */
 
 /* _____________ Your Code Here _____________ */
+// Created just to make the types fully visible on hover
+type Prettify<T> = {
+  [P in keyof T]: T[P]
+}
 
-type MyReadonly2<T, K> = any
+
+type MyReadonly25<T, K extends keyof T = keyof T> = Prettify<{
+  readonly [P in K]: T[P]
+} & {
+  [P in keyof T as P extends K ? never : P]: T[P]
+}>
+
+
+// Elegant Solution
+type MyReadonly2<T, K extends keyof T = keyof T> =
+  Prettify<Readonly<Pick<T, K>> & Omit<T, K>>
 
 /* _____________ Test Cases _____________ */
 import type { Alike, Expect } from '../utils'
@@ -66,6 +80,9 @@ interface Expected {
   readonly description?: string
   completed: boolean
 }
+
+type x = MyReadonly2<Todo1, 'title'>
+type y = MyReadonly2<Todo1, "title" | "description">;
 
 /* _____________ Further Steps _____________ */
 /*
