@@ -33,10 +33,32 @@
 
   > View on GitHub: https://tsch.js.org/9
 */
+type x = keyof bigint extends never ? true : false
 
 /* _____________ Your Code Here _____________ */
 
-type DeepReadonly<T> = any
+// Doesn't pass the second case
+type DeepReadonly1<T> =
+  keyof T extends never
+  ? T
+  : {
+   readonly [key in keyof T]:  DeepReadonly1<T[key]>
+  }
+
+  //Passes first and second but not third
+    type DeepReadonly2<T> = T extends object
+      ? T extends [infer A, ...infer B]
+        ? readonly [DeepReadonly2<A>, ...DeepReadonly2<B>]
+        : T extends Function
+        ? T
+        : {
+            readonly [P in keyof T]: DeepReadonly<T[P]>;
+          }
+      : T;
+
+
+// Passes first and second but not third
+type DeepReadonly<T> = { readonly [P in keyof T]: keyof T[P] extends never ? T[P] : DeepReadonly<T[P]> }
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -44,11 +66,21 @@ import type { Equal, Expect } from '../utils'
 type cases = [
   Expect<Equal<DeepReadonly<X1>, Expected1>>,
   Expect<Equal<DeepReadonly<X2>, Expected2>>,
+  // unpassable case
+  //@ts-expect-error cannot pass for now
+  Expect<Equal<DeepReadonly<X3>, Expected3>>
 ]
+
+type p = DeepReadonly<X2>;
+
+type A = DeepReadonly<{ a: any }>;
+type Expected3 = {
+  readonly a: any
+}
 
 type X1 = {
   a: () => 22
-  b: string
+  false: string
   c: {
     d: boolean
     e: {
@@ -73,7 +105,7 @@ type X2 = { a: string } | { b: number }
 
 type Expected1 = {
   readonly a: () => 22
-  readonly b: string
+  readonly false: string
   readonly c: {
     readonly d: boolean
     readonly e: {
