@@ -25,7 +25,10 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyReturnType<T> = any
+type MyReturnType<T extends (...args: any[]) => any> =
+  T extends (...args: any[]) => infer U
+  ? U
+  : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
