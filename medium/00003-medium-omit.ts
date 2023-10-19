@@ -28,9 +28,19 @@
   > View on GitHub: https://tsch.js.org/3
 */
 
+type MyExclude<T, U> = T extends U ? never : T
+
 /* _____________ Your Code Here _____________ */
 
-type MyOmit<T, K> = any
+type MyOmit1<T, K extends keyof T> = {
+  [P in keyof T as P extends K ? never : P]:  T[P]
+}
+
+type MyOmit<T, K extends keyof T> = {
+  [P in MyExclude<keyof T, K>]: T[P]
+}
+
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -57,6 +67,9 @@ interface Expected1 {
 interface Expected2 {
   title: string
 }
+
+type x = MyOmit<Todo, "description">;
+
 
 /* _____________ Further Steps _____________ */
 /*
