@@ -21,9 +21,22 @@
   > View on GitHub: https://tsch.js.org/20
 */
 
+// Recursive get the value from promises
+type Awaited<T> =
+  T extends PromiseLike<infer R>
+  ? Awaited<R>
+  : T
+
+
+
 /* _____________ Your Code Here _____________ */
 
-declare function PromiseAll(values: any): any
+declare function PromiseAll<T extends readonly unknown[]>
+  // Spreads the array of T into a singly array
+  (values: readonly [...T])
+  //Goes through the array, resolves the one with promises
+  : Promise<{ [P in keyof T]: Awaited<T[P]> }>
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
