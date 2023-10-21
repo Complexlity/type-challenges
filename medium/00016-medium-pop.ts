@@ -26,7 +26,11 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Pop<T extends any[]> = any
+type Pop<T extends unknown[]> =
+  T extends [...infer Head, any]
+  ? Head
+  : []
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
