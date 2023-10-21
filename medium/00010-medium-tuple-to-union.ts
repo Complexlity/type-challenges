@@ -20,7 +20,32 @@
 
 /* _____________ Your Code Here _____________ */
 
-type TupleToUnion<T> = any
+type TupleToUnion1<T extends unknown[]> =
+  T[number]
+
+type TupleToUnion2<T extends unknown[]> =
+T extends [infer Head, ...infer Tail]
+? Head | TupleToUnion2<Tail>
+: never
+
+type TupleToUnion3<T extends unknown[]> =
+T extends (infer R)[]
+? R
+: never
+
+
+type TupleToUnion4<T extends unknown[]> = T[any]
+
+
+type TupleToUnion<T extends any[]> = keyof {
+  [K in T[number]]: K
+}
+
+
+
+type MyArray = ['2', 222, true, hello:'world']
+type X = TupleToUnion3<MyArray>
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
