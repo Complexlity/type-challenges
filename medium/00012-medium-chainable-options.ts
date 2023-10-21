@@ -38,16 +38,55 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type Prettify<T> = {
+  [K in keyof T]: T[K]
+}
 
-type Chainable = {
-  option(key: string, value: any): any
-  get(): any
+type Chainable1<T= {}> = {
+  option<
+    K extends PropertyKey,
+    V
+    >(key:
+      // check if the never key exists in the previous structure
+      K extends keyof T
+        // If true, checks if the values is the same
+        ? V extends T[K]
+          //the value is the same so error
+          ? never
+          // the value is not the same so we take the new value
+          : K
+        // the key does not exist so we add the new key
+        : K,
+       value: V
+  )
+    // we return a new object removing duplicate keys (saving only the most recent) if true,
+    // or adding new keys. This makes for chainablility
+    : Chainable1<Omit<T, K> & Record<K, V>>
+  get(): T
+}
+type Chainable2<T= {}> = {
+  option<
+    K extends PropertyKey,
+    V
+    >(key:
+      // check if the never key exists in the previous structure
+      K extends keyof T
+        // If true, errors since we don't want to set the value twice
+        ? never
+        // the key does not exist so we add the new key
+        : K,
+       value: V
+  )
+    // we return a new object removing duplicate keys (saving only the most recent) if true,
+    // or adding new keys. This makes for chainablility
+    : Chainable2<Omit<T, K> & Record<K, V>>
+  get(): T
 }
 
 /* _____________ Test Cases _____________ */
 import type { Alike, Expect } from '../utils'
 
-declare const a: Chainable
+declare const a: Chainable2
 
 const result1 = a
   .option('foo', 123)
@@ -61,11 +100,14 @@ const result2 = a
   .option('name', 'last name')
   .get()
 
+// This test passes Chainable 2 but fails Chainable 1
+ // Reason: The challenge/test must have been ammended
 const result3 = a
   .option('name', 'another name')
   // @ts-expect-error
   .option('name', 123)
   .get()
+
 
 type cases = [
   Expect<Alike<typeof result1, Expected1>>,
