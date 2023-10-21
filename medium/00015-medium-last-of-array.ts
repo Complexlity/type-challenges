@@ -24,7 +24,14 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Last<T extends any[]> = any
+type Last1<T extends unknown[]> =
+  T extends [...infer Head, infer Tail]
+  ? Tail
+  : never
+
+type Last<T extends unknown[]> =
+  [never, ...T][T['length']]
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -34,6 +41,8 @@ type cases = [
   Expect<Equal<Last<[3, 2, 1]>, 1>>,
   Expect<Equal<Last<[() => 123, { a: string }]>, { a: string }>>,
 ]
+
+
 
 /* _____________ Further Steps _____________ */
 /*
