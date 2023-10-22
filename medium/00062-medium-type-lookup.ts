@@ -29,7 +29,17 @@
 
 /* _____________ Your Code Here _____________ */
 
-type LookUp<U, T> = any
+type LookUp0<U extends { type: PropertyKey }, T extends PropertyKey> = {
+  [K in T]: U extends { type: T }
+  ? U
+  : never
+  }[T]
+
+type LookUp<
+  U extends {type: PropertyKey},
+  T extends U['type']
+> = U extends {type: T} ? U : never
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -52,6 +62,8 @@ type cases = [
   Expect<Equal<LookUp<Animal, 'cat'>, Cat>>,
 ]
 
+type X = LookUp<Animal, 'cat'>
+//    ^?
 /* _____________ Further Steps _____________ */
 /*
   > Share your solutions: https://tsch.js.org/62/answer
