@@ -16,9 +16,13 @@
   > View on GitHub: https://tsch.js.org/106
 */
 
+type WhiteSpace = ' ' | '\t' | '\n' | '\r'
 /* _____________ Your Code Here _____________ */
 
-type TrimLeft<S extends string> = any
+type TrimLeft<S extends string> =
+  S extends `${WhiteSpace}${infer U}`
+  ? TrimLeft<U>
+  : S
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -32,6 +36,9 @@ type cases = [
   Expect<Equal<TrimLeft<''>, ''>>,
   Expect<Equal<TrimLeft<' \n\t'>, ''>>,
 ]
+
+type X = TrimLeft<'   \n\t foo bar '>
+type Y = TrimLeft<"str">;
 
 /* _____________ Further Steps _____________ */
 /*
