@@ -22,8 +22,16 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type X = AppendArgument<(name: string, age: number) => void,string >
 
-type AppendArgument<Fn, A> = any
+
+type AppendArgument0<Fn extends (...args: any[] ) => any, A extends unknown> =
+  Fn extends (...args: [...infer T]) => infer U
+  ? (...args: [...T, x: A]) => U
+  : never
+
+type AppendArgument<Fn extends (...args: any[] ) => unknown, A extends unknown> =
+  (...args: [...Parameters<Fn>, A]) => ReturnType<Fn>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
