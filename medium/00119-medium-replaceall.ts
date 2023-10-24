@@ -18,7 +18,15 @@
 
 /* _____________ Your Code Here _____________ */
 
-type ReplaceAll<S extends string, From extends string, To extends string> = any
+type ReplaceAll<
+  T extends string,
+  From extends string,
+  To extends string
+> = From extends ""
+  ? T
+  : T extends `${infer Head}${From}${infer Tail}`
+  ? `${Head}${To}${ReplaceAll<`${Tail}`, From, To>}`
+  : T;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -35,6 +43,8 @@ type cases = [
   Expect<Equal<ReplaceAll<'', '', ''>, ''>>,
 ]
 
+type X = ReplaceAll<"foobarfoobar", "ob", "b">;
+type Y = ReplaceAll<"foboorfoboar", "bo", "b">;
 /* _____________ Further Steps _____________ */
 /*
   > Share your solutions: https://tsch.js.org/119/answer
