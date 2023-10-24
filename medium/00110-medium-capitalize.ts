@@ -18,7 +18,10 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyCapitalize<S extends string> = any
+type MyCapitalize<T extends string> =
+  T extends `${infer A}${infer B}`
+  ? `${Uppercase<A>}${B}`
+  : ''
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
