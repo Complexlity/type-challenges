@@ -18,21 +18,36 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Flatten = any
+type Flatten<T extends unknown[]> = T extends [infer Head, ...infer Tail]
+  ? Head extends unknown[]
+    ? [...Flatten<Head>, ...Flatten<Tail>]
+    : [Head, ...Flatten<Tail>]
+  : [];
+
+type Flatten0<T> = T extends []
+  ? []
+  : T extends [infer Head, ...infer Tail]
+  ? [...Flatten0<Head>, ...Flatten0<Tail>]
+  : [T];
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '../utils'
+import type { Equal, Expect } from "../utils";
 
 type cases = [
   Expect<Equal<Flatten<[]>, []>>,
   Expect<Equal<Flatten<[1, 2, 3, 4]>, [1, 2, 3, 4]>>,
   Expect<Equal<Flatten<[1, [2]]>, [1, 2]>>,
   Expect<Equal<Flatten<[1, 2, [3, 4], [[[5]]]]>, [1, 2, 3, 4, 5]>>,
-  Expect<Equal<Flatten<[{ foo: 'bar'; 2: 10 }, 'foobar']>, [{ foo: 'bar'; 2: 10 }, 'foobar']>>,
-]
+  Expect<
+    Equal<
+      Flatten<[{ foo: "bar"; 2: 10 }, "foobar"]>,
+      [{ foo: "bar"; 2: 10 }, "foobar"]
+    >
+  >
+];
 
 // @ts-expect-error
-type error = Flatten<'1'>
+type error = Flatten<"1">;
 
 /* _____________ Further Steps _____________ */
 /*
