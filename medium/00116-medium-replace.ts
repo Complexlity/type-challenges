@@ -18,8 +18,21 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Replace<S extends string, From extends string, To extends string> = any
+type Replace0<T extends string, From extends string, To extends string> =
+  From extends ''
+  ? T
+  : T extends `${infer A}${From}${infer B}`
+    ? `${A}${To}${B}`
+  : T
 
+type Replace<T extends string, From extends string, To extends string> =
+  From extends ""
+  ? T
+  : T extends `${From}${infer B}`
+    ? `${To}${B}`
+    : T extends `${infer Head}${infer Tail}`
+      ? `${Head}${Replace<Tail, From, To>}`
+      : T
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
 
@@ -31,6 +44,7 @@ type cases = [
   Expect<Equal<Replace<'foobarbar', 'bra', 'foo'>, 'foobarbar'>>,
   Expect<Equal<Replace<'', '', ''>, ''>>,
 ]
+
 
 /* _____________ Further Steps _____________ */
 /*
