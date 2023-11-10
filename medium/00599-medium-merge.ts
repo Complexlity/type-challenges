@@ -27,8 +27,30 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Merge<F, S> = any
+type Prettify<T> =
+  {
+    [K in keyof T]: T[K]
+  }
 
+type Merge0<F extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>> =
+  Prettify<Omit<F, keyof S> & S>
+
+type Merge1<F extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>> =
+  {
+    [K in keyof F | keyof S]:
+    K extends keyof S
+      ? S[K]
+      : K extends keyof F
+        ? F[K]
+        : never
+  }
+type Merge<F extends Record<PropertyKey, any>, S extends Record<PropertyKey, any>> =
+  {
+    [K in keyof (F & S)]:
+    K extends keyof S
+      ? S[K]
+      : F[K]
+  }
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
 
@@ -48,7 +70,8 @@ type cases = [
     c: boolean
   }>>,
 ]
-
+type Z = Merge<Foo, Bar>
+//   ^?
 /* _____________ Further Steps _____________ */
 /*
   > Share your solutions: https://tsch.js.org/599/answer
