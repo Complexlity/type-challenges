@@ -19,7 +19,17 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Absolute<T extends number | string | bigint> = any
+type Absolute0<T extends number | string | bigint> =
+  `${T}` extends `${infer U}${infer V}`
+    ? U extends '-'
+      ? V
+      : `${T}`
+    : `${T}`
+
+type Absolute<T extends number | string | bigint> =
+  `${T}` extends `-${infer Rest}`
+  ? Rest
+  : `${T}`
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -36,6 +46,9 @@ type cases = [
   Expect<Equal<Absolute<-1_000_000n>, '1000000'>>,
   Expect<Equal<Absolute<9_999n>, '9999'>>,
 ]
+
+type Z = Absolute<-5>
+//   ^?
 
 /* _____________ Further Steps _____________ */
 /*
