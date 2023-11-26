@@ -31,39 +31,63 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type PlusOrMinus = "+" | "-";
 
-type PercentageParser<A extends string> = any
+type PercentageParser<T extends string> = [
+  // Extract sign from T
+  ExtractSign<T>,
+  // Extract number from T
+  ExtractNumber<T>,
+  // Extract percent from T
+  ExtractPercent<T>
+];
+
+type ExtractNumber<T> =
+  T extends `${ExtractSign<T>}${infer Number}${ExtractPercent<T>}`
+    ? Number
+    : "";
+
+type ExtractSign<T> = T extends `${infer Sign extends PlusOrMinus}${infer Rest}`
+  ? Sign
+  : "";
+
+type ExtractPercent<T> = T extends `${string}${infer Percent extends "%"}`
+  ? Percent
+  : "";
+
+type X = PercentageParser<"-100%">;
+//    ^?
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '../utils'
+import type { Equal, Expect } from "../utils";
 
-type Case0 = ['', '', '']
-type Case1 = ['+', '', '']
-type Case2 = ['+', '1', '']
-type Case3 = ['+', '100', '']
-type Case4 = ['+', '100', '%']
-type Case5 = ['', '100', '%']
-type Case6 = ['-', '100', '%']
-type Case7 = ['-', '100', '']
-type Case8 = ['-', '1', '']
-type Case9 = ['', '', '%']
-type Case10 = ['', '1', '']
-type Case11 = ['', '100', '']
+type Case0 = ["", "", ""];
+type Case1 = ["+", "", ""];
+type Case2 = ["+", "1", ""];
+type Case3 = ["+", "100", ""];
+type Case4 = ["+", "100", "%"];
+type Case5 = ["", "100", "%"];
+type Case6 = ["-", "100", "%"];
+type Case7 = ["-", "100", ""];
+type Case8 = ["-", "1", ""];
+type Case9 = ["", "", "%"];
+type Case10 = ["", "1", ""];
+type Case11 = ["", "100", ""];
 
 type cases = [
-  Expect<Equal<PercentageParser<''>, Case0>>,
-  Expect<Equal<PercentageParser<'+'>, Case1>>,
-  Expect<Equal<PercentageParser<'+1'>, Case2>>,
-  Expect<Equal<PercentageParser<'+100'>, Case3>>,
-  Expect<Equal<PercentageParser<'+100%'>, Case4>>,
-  Expect<Equal<PercentageParser<'100%'>, Case5>>,
-  Expect<Equal<PercentageParser<'-100%'>, Case6>>,
-  Expect<Equal<PercentageParser<'-100'>, Case7>>,
-  Expect<Equal<PercentageParser<'-1'>, Case8>>,
-  Expect<Equal<PercentageParser<'%'>, Case9>>,
-  Expect<Equal<PercentageParser<'1'>, Case10>>,
-  Expect<Equal<PercentageParser<'100'>, Case11>>,
-]
+  Expect<Equal<PercentageParser<"">, Case0>>,
+  Expect<Equal<PercentageParser<"+">, Case1>>,
+  Expect<Equal<PercentageParser<"+1">, Case2>>,
+  Expect<Equal<PercentageParser<"+100">, Case3>>,
+  Expect<Equal<PercentageParser<"+100%">, Case4>>,
+  Expect<Equal<PercentageParser<"100%">, Case5>>,
+  Expect<Equal<PercentageParser<"-100%">, Case6>>,
+  Expect<Equal<PercentageParser<"-100">, Case7>>,
+  Expect<Equal<PercentageParser<"-1">, Case8>>,
+  Expect<Equal<PercentageParser<"%">, Case9>>,
+  Expect<Equal<PercentageParser<"1">, Case10>>,
+  Expect<Equal<PercentageParser<"100">, Case11>>
+];
 
 /* _____________ Further Steps _____________ */
 /*

@@ -18,7 +18,10 @@
 
 /* _____________ Your Code Here _____________ */
 
-type DropChar<S, C> = any
+type DropChar<T extends string, C extends string> =
+  T extends `${infer A}${C}${infer B}`
+  ? DropChar<`${A}${B}`, C>
+  : T
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
