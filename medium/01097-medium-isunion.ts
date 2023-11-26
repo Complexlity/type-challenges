@@ -20,7 +20,19 @@
 
 /* _____________ Your Code Here _____________ */
 
-type IsUnion<T> = any
+type IsUnion<T, Copy = T> =
+  [T] extends [never]
+  ? false
+  : T extends never
+  ? false
+  : [Copy] extends [T]
+  ? false
+  :true
+
+
+type x = IsUnion<"a" | "b" | "c" | "d">;
+//    ^?
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
