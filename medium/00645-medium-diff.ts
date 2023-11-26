@@ -12,7 +12,35 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Diff<O, O1> = any
+type Join<L extends Record<string, unknown>,
+  R extends Record<string, unknown>> =
+ {
+    [P in keyof L | keyof R]: P extends keyof L
+      ? L[P]
+      : P extends keyof R
+      ? R[P]
+      : never;
+  }
+
+type Diff0<
+  L extends Record<string, unknown>,
+  R extends Record<string, unknown>
+  > =
+  {
+    [P in keyof Join<L, R>
+    as P extends keyof L & keyof R ? never : P]:
+    Join<L, R>[P]
+  }
+
+type Diff1<L, R> = {
+  [P in keyof L | keyof R as Exclude<P, keyof L & keyof R>]
+  : (L & R)[P]
+}
+
+type Diff<L, R> = Omit<L & R, keyof (L | R)>
+
+type x = Diff<Foo, Bar>;
+//   ^?
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
