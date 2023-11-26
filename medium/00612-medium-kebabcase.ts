@@ -24,7 +24,12 @@
 
 /* _____________ Your Code Here _____________ */
 
-type KebabCase<S> = any
+type KebabCase<T extends string> =
+  T extends `${infer Head}${infer Tail}`
+  ? Tail extends Uncapitalize<Tail>
+    ? `${Lowercase<Head>}${KebabCase<Tail>}`
+    : `${Lowercase<Head>}-${KebabCase<Tail>}`
+  : T
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'

@@ -31,13 +31,19 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyPick<T, K extends keyof T> = {
-  [P in K] : T[P]
+// type MyPick<T, K extends keyof T> = {
+//   [P in K] : T[P]
+// }
+
+type Pickk<T, K extends keyof T> = {
+  //complete this
+
 }
 
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
+
 
 type cases = [
   Expect<Equal<Expected1, MyPick<Todo, 'title'>>>,
