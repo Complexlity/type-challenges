@@ -18,8 +18,23 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type Falsy = 0 | "" | false | [] | Record<string, never> | undefined | null
 
-type AnyOf<T extends readonly any[]> = any
+type AnyOf0<T extends readonly any[]> =
+  T extends [infer Head, ...infer Tail]
+  ? Head extends Falsy
+      ? AnyOf0<Tail>
+      : true
+  : false
+
+type AnyOf<T extends readonly any[]> =
+  T[number] extends Falsy
+  ? false
+  : true
+
+
+type x = AnyOf<["", false, [], {}, undefined, null]>
+//    ^?
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
