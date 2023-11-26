@@ -23,7 +23,17 @@
 
 /* _____________ Your Code Here _____________ */
 
-type IsNever<T> = any
+type IsNever<T> =
+  [T] extends [never]
+  ? true
+  : false
+
+/*
+Also works with
+T[] extends never[]
+[T] extends never[]
+T[] extends [never]
+*/
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
