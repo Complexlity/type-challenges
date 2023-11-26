@@ -45,7 +45,14 @@
 
 /* _____________ Your Code Here _____________ */
 
-type ReplaceKeys<U, T, Y> = any
+type ReplaceKeys<Input, SearchKeys, UpdateKeys> = {
+  [InputKeys in keyof Input]: // Iterate over each property P in T
+  InputKeys extends SearchKeys // If P extends U
+    ? InputKeys extends keyof UpdateKeys // If P also extends keyof V
+      ? UpdateKeys[InputKeys] // Use the value of V at property P
+      : never // Otherwise, use the 'never' type
+    : Input[InputKeys] // Otherwise, use the value of T at property P
+}
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
