@@ -23,7 +23,12 @@
 
 /* _____________ Your Code Here _____________ */
 
-type OmitByType<T, U> = any
+type OmitByType<
+  T extends Record<string, any>,
+  U extends unknown> =
+  {
+  [P in keyof T as T[P] extends U ? never: P]: T[P]
+}
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
