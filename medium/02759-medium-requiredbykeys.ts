@@ -27,7 +27,24 @@
 
 /* _____________ Your Code Here _____________ */
 
-type RequiredByKeys<T, K> = any
+type Merge<T> = {
+  [P in keyof T]: T[P]
+}
+
+// From first principle
+type RequiredByKeys0<T extends Record<any, any>, K extends keyof T = keyof T> =
+  Merge<
+    & {
+      [P in keyof T as P extends K ? P : never]-? : T[P]
+    }
+    & {
+      [P in keyof T as P extends K ? never : P]: T[P]
+    }>
+
+// Using utility types
+type RequiredByKeys<T extends Record<any, any>, K extends keyof T = keyof T> =
+  Merge<Required<Pick<T, K>> & Omit<T,K>>
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
