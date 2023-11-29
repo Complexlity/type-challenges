@@ -25,7 +25,9 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Mutable<T> = any
+type Mutable<T extends Record<any, any>> = {
+ -readonly[P in keyof T]: T[P]
+}
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -45,6 +47,7 @@ type cases = [
   Expect<Equal<Mutable<Readonly<Todo1>>, Todo1>>,
   Expect<Equal<Mutable<Readonly<List>>, List>>,
 ]
+
 
 type errors = [
   // @ts-expect-error
