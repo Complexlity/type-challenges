@@ -23,7 +23,16 @@
 
 /* _____________ Your Code Here _____________ */
 
-type ObjectEntries<T> = any
+
+
+type ObjectEntries<T extends Record<string, any>> =
+  keyof T extends infer P
+    ? P extends keyof T
+       ? T[P] extends undefined
+          ? [P, T[P]]
+          : [P, Required<T>[P]]
+       : never
+  : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -35,6 +44,12 @@ interface Model {
 }
 
 type ModelEntries = ['name', string] | ['age', number] | ['locations', string[] | null]
+
+type y = ObjectEntries<Partial<Model>>;
+
+type x = ObjectEntries<Model>
+
+type z = ObjectEntries<{ key?: undefined }>;
 
 type cases = [
   Expect<Equal<ObjectEntries<Model>, ModelEntries>>,
