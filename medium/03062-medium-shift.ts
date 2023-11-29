@@ -18,7 +18,10 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Shift<T> = any
+type Shift<T extends unknown[]> =
+  T extends [unknown, ...infer Rest]
+  ? Rest
+  : []
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
