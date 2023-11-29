@@ -23,7 +23,11 @@
 
 /* _____________ Your Code Here _____________ */
 
-type PickByType<T, U> = any
+type PickByType<T extends Record<any, any>, U extends unknown> =
+  {
+    [P in keyof T as
+    T[P] extends U ? P : never]: T[P]
+    }
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
