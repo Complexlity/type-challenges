@@ -19,8 +19,10 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Reverse<T> = any
-
+type Reverse<T extends unknown[]> =
+  T extends [infer Head, ...infer Tail]
+  ? [...Reverse<Tail>, Head]
+  : []
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
 
