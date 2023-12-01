@@ -20,8 +20,21 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type Reverse<T extends unknown[]> =
+  T extends [...infer Head, infer Tail]
+  ? [Tail, ...Reverse<Head>]
+  : []
 
-type FlipArguments<T> = any
+type FlipArguments0<T extends (...args: any[]) => unknown> =
+  T extends (...args: infer Args) => infer R
+  ? (...args: Reverse<Args>) => R
+  : never
+
+  // Using the in-built types
+  type FlipArguments<T extends (...args: any[]) => unknown> =
+ (...args: Reverse<Parameters<T>>) => ReturnType<T>
+
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -31,6 +44,7 @@ type cases = [
   Expect<Equal<FlipArguments<(foo: string) => number>, (foo: string) => number>>,
   Expect<Equal<FlipArguments<(arg0: string, arg1: number, arg2: boolean) => void>, (arg0: boolean, arg1: number, arg2: string) => void>>,
 ]
+
 
 type errors = [
   // @ts-expect-error
