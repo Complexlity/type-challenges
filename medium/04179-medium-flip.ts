@@ -20,7 +20,9 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Flip<T> = any
+type Flip<T extends Record<string, any>> = {
+  [P in keyof T as `${T[P]}`]: P
+}
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect, NotEqual } from '../utils'
@@ -31,6 +33,9 @@ type cases = [
   Expect<Equal<{ 3.14: 'pi'; true: 'bool' }, Flip<{ pi: 3.14; bool: true }>>>,
   Expect<Equal<{ val2: 'prop2'; val: 'prop' }, Flip<{ prop: 'val'; prop2: 'val2' }>>>,
 ]
+
+type x = Flip<{ pi: 3.14; bool: true }>
+//    ^?
 
 /* _____________ Further Steps _____________ */
 /*
