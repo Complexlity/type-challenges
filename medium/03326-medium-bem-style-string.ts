@@ -16,7 +16,14 @@
 
 /* _____________ Your Code Here _____________ */
 
-type BEM<B extends string, E extends string[], M extends string[]> = any
+type WithPrefix<prefix extends string,
+  T extends string[]> =
+  0 extends T['length']
+  ? ""
+  : `${prefix}${T[number]}`
+
+type BEM<B extends string, E extends string[], M extends string[]> =
+  `${B}${WithPrefix<'__', E>}${WithPrefix<"--", M>}`
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
