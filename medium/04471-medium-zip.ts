@@ -15,17 +15,64 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Zip<T, U> = any
+// My Initial Solution
+type Zip0<
+  T extends unknown[],
+  U extends unknown[],
+  Acc extends any[] = [],
+  Current extends 1[] = []
+  > =
+  T['length'] extends 0
+    ? Acc
+    : Current['length'] extends U['length']
+      ? Acc
+  : Zip0<
+    T,
+    U,
+    [...Acc, [T[Current['length']], U[Current['length']]]],
+    [...Current, 1]>
+
+// Same solution but cleaner
+type Zip1<
+  T extends unknown[],
+  U extends unknown[],
+  Acc extends any[] = [],
+  > =
+  Acc['length'] extends T['length'] | U['length']
+    ? Acc
+  : Zip1<
+    T,
+    U,
+    [...Acc, [T[Acc['length']], U[Acc['length']]]]
+    >
+
+// Tests
+type x = Zip0<[1, 2], ['A', 'B']>
+//    ^?
+type y = Zip1<[1, 2], ['A', 'B']>
+//    ^?
+type z = Zip<[1, 2], ['A', 'B']>
+//    ^?
+
+//Cleanest solution
+type Zip<T extends any[], U extends any[]> =
+  [T, U] extends [
+  [infer L, ...infer RestT],
+  [infer R, ...infer RestU]
+]
+  ? [[L, R], ...Zip<RestT, RestU>]
+  : [];
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
 
 type cases = [
-  Expect<Equal<Zip<[], []>, []>>,
-  Expect<Equal<Zip<[1, 2], [true, false]>, [[1, true], [2, false]]>>,
-  Expect<Equal<Zip<[1, 2, 3], ['1', '2']>, [[1, '1'], [2, '2']]>>,
-  Expect<Equal<Zip<[], [1, 2, 3]>, []>>,
-  Expect<Equal<Zip<[[1, 2]], [3]>, [[[1, 2], 3]]>>,
+  Expect<Equal<Zip1<[], []>, []>>,
+  Expect<Equal<Zip1<[1, 2], [true, false]>, [[1, true], [2, false]]>>,
+  Expect<Equal<Zip1<[1, 2, 3], ['1', '2']>, [[1, '1'], [2, '2']]>>,
+  Expect<Equal<Zip1<[], [1, 2, 3]>, []>>,
+  Expect<Equal<Zip1<[[1, 2]], [3]>, [[[1, 2], 3]]>>,
 ]
 
 /* _____________ Further Steps _____________ */
