@@ -25,7 +25,76 @@
 
 /* _____________ Your Code Here _____________ */
 
-type GreaterThan<T extends number, U extends number> = any
+type Arrayfy<T extends number,
+  Acc extends 1[] = []> =
+  Acc['length'] extends T
+  ? Acc
+  : Arrayfy<T, [...Acc, 1]>
+
+// Hits recursion limit
+type GreaterThan0<
+  T extends number,
+  U extends number> =
+  T extends U
+    ? false
+    : T extends `-${number}`
+        ? false
+        : U extends `-${number}`
+            ? false
+            : Arrayfy<T> extends [...Arrayfy<U>, ...infer Tail]
+                ? true
+  : false
+
+  // Doest not hit recursion limit
+type StringToArray<T extends string> =
+  T extends `${infer L extends number}${infer Rest}`
+    ? [L, ...StringToArray<Rest>]
+  : [];
+
+type CreateArrayByNumber<
+  T extends number,
+  R extends any[] = []
+> = R["length"] extends T ? R : CreateArrayByNumber<T, [...R, undefined]>;
+type CompareOneDigit<T extends number, U extends number> =
+  T extends U
+  ? false
+  : CreateArrayByNumber<T> extends [...CreateArrayByNumber<U>, ...infer _]
+  // : CreateArrayByNumber<T> extends [...CreateArrayByNumber<U>, ...infer _]
+  ? true
+  : false;
+type CompareAllNumber<
+  T extends any[],
+  U extends any[],
+  CompareCount extends any[] = []
+  > =
+  T["length"] extends U["length"]
+  ? CompareCount["length"] extends T["length"]
+    ? false
+    : CompareOneDigit<
+        T[CompareCount["length"]],
+        U[CompareCount["length"]]
+      > extends true
+    ? true
+    : CompareAllNumber<T, U, [...CompareCount, 1]>
+  : T[U["length"]] extends undefined
+  ? false
+  : true;
+
+  // Method 2
+type GreaterThan<T extends number, U extends number> =
+  CompareAllNumber<
+  StringToArray<`${T}`>,
+  StringToArray<`${U}`>
+>;
+// Method 2 pseudocode
+/*
+1. Convert both numbers numbers into an array of numbers
+i.e 12 => [1, 2], 231 => [2, 3, 1]
+2. Check if the lenght of the array is the same
+  false ? Check if first array is longer than second. Return true else false
+3. Check greater than one digit at a time until you get to the end of the array
+*/
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
