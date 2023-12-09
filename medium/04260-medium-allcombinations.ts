@@ -19,7 +19,64 @@
 
 /* _____________ Your Code Here _____________ */
 
-type AllCombinations<S> = any
+
+type StringToUnion0<S extends string = ""> =
+  S extends `${infer F}${infer R}`
+  ? F | StringToUnion0<R>
+  : S;
+
+type x = StringToUnion0<"ABCD">;
+//    ^?
+
+
+type Combinations0<T extends string> =
+  [T] extends [never]
+  ? "" :
+  "" |
+  { [K in T]:
+    `${K}${Combinations0<Exclude<T, K>>}` }[T];
+
+type AllCombinations0<S extends string> =
+  Combinations0<
+    StringToUnion<S>
+  >;
+
+//  Method 2
+// your answers
+
+// 1. Convert the string into a union type
+type StringToUnion<S extends string> =
+  S extends `${infer L}${infer R}`
+  ? L | StringToUnion<R>
+  : S;
+// 2. Combine union types in pairs
+type Combination<
+  A extends string,
+  B extends string> =
+     | A
+     |B
+     | `${A}${B}`
+     | `${B}${A}`;
+// 3eg
+
+
+type test = Combination<'A'|'B', 'C'|'D'>
+//       ^?
+
+type test2 = Combination<'A' , 'B' |'C'>
+//      ^?
+
+type test3 = Combination<'B' , 'A' |'C'>
+//      ^?
+
+//4. Merger of union types, using union types to be disassembled by default
+type UnionCombination<
+  A extends string,
+  B extends string = A> =
+  A extends B ?
+  Combination<A, UnionCombination<Exclude<B, A>>> : never;
+//5. String merging
+type AllCombinations<S extends string> = UnionCombination<StringToUnion<S>>;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
