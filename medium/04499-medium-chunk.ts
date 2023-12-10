@@ -19,7 +19,20 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Chunk = any
+
+
+
+  type Chunk<
+    T extends unknown[],
+  U extends number = 1,
+    Acc extends unknown[] = []> =
+    Acc['length'] extends U
+    ? [Acc, ...Chunk<T, U>]
+    : T extends [infer Head, ...infer Tail]
+          ? Chunk<Tail, U, [...Acc, Head]>
+      : Acc extends []
+        ? []
+        : [Acc]
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
