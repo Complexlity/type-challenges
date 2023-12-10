@@ -17,11 +17,16 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type WhiteSpace = "\n" | "\t" | " " | "\s"
 
-type TrimRight<S extends string> = any
+type TrimRight<T extends string> =
+  T extends `${infer U}${WhiteSpace}`
+  ? TrimRight<U>
+  : T
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
+
 
 type cases = [
   Expect<Equal<TrimRight<'str'>, 'str'>>,
