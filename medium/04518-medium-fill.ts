@@ -20,12 +20,19 @@
 /* _____________ Your Code Here _____________ */
 
 type Fill<
-  T extends unknown[],
-  N,
+  T extends any[],
+  U extends any,
   Start extends number = 0,
-  End extends number = T['length'],
-> = any
-
+  End extends number = T["length"],
+  Acc extends any[] = []
+  > =
+  T extends [infer First, ...infer Rest]
+  ? Acc['length'] extends Start
+      ? Start extends End
+        ? [...Acc, ...T]
+        : Fill<Rest, U, [...Acc, U]['length'], End, [...Acc, U]>
+      : Fill<Rest, U, Start, End, [...Acc, First]>
+  : Acc
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
 
