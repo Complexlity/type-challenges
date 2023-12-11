@@ -1,3 +1,5 @@
+//Prettier Ignore
+
 /*
   5117 - Without
   -------
@@ -17,8 +19,28 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type ToUnion<T> = T extends unknown[] ? T[number] : T
 
-type Without<T, U> = any
+// Without Accumulator
+type Without0<
+  T extends unknown[],
+  U,
+  > =
+  T extends [infer First, ...infer Rest]
+  ? First extends ToUnion<U>
+    ? Without0<Rest, U>
+  : [First, ...Without0<Rest, U>]
+  : []
+
+type Without<
+  T extends any[],
+  U extends T[number] | T[number][],
+  A extends any[] = []
+> = T extends [infer L, ...infer R]
+  ? L extends [U extends any[] ? U : [U]][0][number]
+    ? Without<R, U, A>
+    : Without<R, U, [...A, L]>
+  : A;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
