@@ -18,7 +18,12 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Trunc = any
+type Trunc<T extends string | number> =
+  `${T}` extends `${infer First}.${string}` ?
+  First extends "" ?
+    "0"
+  : First
+  : `${T}`
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
