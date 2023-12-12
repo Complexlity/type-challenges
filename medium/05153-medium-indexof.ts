@@ -18,7 +18,30 @@
 
 /* _____________ Your Code Here _____________ */
 
-type IndexOf<T, U> = any
+type IndexOf0<
+  T extends unknown[],
+  U,
+  Index extends 1[] = []
+  > =
+  Index['length'] extends T['length'] ?
+      -1
+  : Equal<T[Index['length']], U> extends true ?
+      Index['length']
+  : IndexOf0<T, U, [1, ...Index]>
+
+type IndexOf<
+  T extends unknown[],
+  U,
+  Index extends 1[] = []>
+  =
+  T extends [infer Head, ...infer Tail]?
+  Equal<Head, U> extends true ?
+  Index['length']
+  : IndexOf<Tail, U, [1, ...Index]>
+  : -1
+
+type x = IndexOf<[], 2>;
+//    ^?
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
