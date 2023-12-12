@@ -19,7 +19,18 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Join<T, U> = any
+type Join<
+  T extends string[],
+  U extends string | number,
+  > =
+  T extends
+  [infer Head extends string,
+    ...infer Tail extends string[]] ?
+  Tail['length'] extends 0 ?
+  `${Head}`
+  : `${Head}${U}${Join<Tail, U>}`
+  : ''
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
