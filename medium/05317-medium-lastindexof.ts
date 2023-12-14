@@ -19,7 +19,14 @@
 
 /* _____________ Your Code Here _____________ */
 
-type LastIndexOf<T, U> = any
+
+type LastIndexOf<T extends any[], U> =
+  T extends [...infer Head, infer Tail] ?
+  Equal<Tail, U> extends true ? Head['length']
+  : LastIndexOf<Head, U>
+  : -1;
+
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -31,6 +38,8 @@ type cases = [
   Expect<Equal<LastIndexOf<[string, 2, number, 'a', number, 1], number>, 4>>,
   Expect<Equal<LastIndexOf<[string, any, 1, number, 'a', any, 1], any>, 5>>,
 ]
+
+
 
 /* _____________ Further Steps _____________ */
 /*
