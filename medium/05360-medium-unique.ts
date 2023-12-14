@@ -20,8 +20,25 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Unique<T> = any
+type IndexOf<T extends unknown[], U, Index extends 1[] = []> = T extends [
+  infer Head,
+  ...infer Tail
+]
+  ? Equal<Head, U> extends true
+    ? Index["length"]
+    : IndexOf<Tail, U, [1, ...Index]>
+  : -1;
 
+
+type Unique<
+  T extends unknown[],
+  > =
+  T extends [...infer F, infer R] ?
+    IndexOf<F, R> extends -1 ?
+      [...Unique<F>, R ]
+    : Unique<F>
+  : []
+//    ^?
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
 
