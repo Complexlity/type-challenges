@@ -16,7 +16,25 @@
 
 /* _____________ Your Code Here _____________ */
 
-type NumberRange<L, H> = any
+type BuildArray<T extends number, Acc extends 1[] = []> =
+  Acc['length'] extends T ?
+  Acc
+  : BuildArray<T, [...Acc, 1]>
+
+type NumberRange<
+  L extends number,
+  H extends number,
+  Incrementor extends 1[] = BuildArray<L>,
+  Acc extends number[] = []
+  > =
+  Acc[0] extends H ?
+  Acc[number]
+  : NumberRange<
+    L,
+    H,
+    [...Incrementor, 1], [
+      Incrementor['length'], ...Acc]>
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
