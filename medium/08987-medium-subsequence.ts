@@ -20,7 +20,19 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Subsequence<T extends any[]> = any
+type Subsequence0<
+  T extends any[],
+  Prefix extends any[] = []> =
+  T extends [
+  infer F,
+  ...infer R
+]
+  ? Subsequence0<R, Prefix | [...Prefix, F]>
+  : Prefix;
+
+type Subsequence<T> = T extends [infer One, ...infer Rest]
+  ? [One] | [...Subsequence<Rest>] | [One, ...Subsequence<Rest>]
+  : [];
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
