@@ -38,8 +38,41 @@
 */
 
 /* _____________ Your Code Here _____________ */
+type Merge<T> = {
+  [P in keyof T]: T[P]
+}
 
-type MapTypes<T, R> = any
+type MapTypes0<
+  T extends Record<string, any>,
+  R extends { mapFrom: unknown, mapTo: unknown }> =
+  Merge<{
+    [P in keyof T
+    as Equal<T[P], R['mapFrom']> extends
+    true ? P : never]: R['mapTo']
+  }
+  & {
+   [P in keyof T as Equal<T[P], R['mapFrom']> extends false ? P : never]: T[P]
+  }>
+type MapTypes<
+  T extends Record<string, any>,
+  R extends { mapFrom: unknown, mapTo: unknown }> =
+  {
+    [K in keyof T]:
+    T[K] extends R['mapFrom'] ?
+    R extends { mapFrom: T[K] } ?
+    R['mapTo']
+    : never
+    : T[K]
+  }
+
+type x = MapTypes<{ stringToArray: string }, { mapFrom: string; mapTo: [] }>
+//    ^?
+type y = MapTypes<
+//    ^?
+  { name: string; date: Date },
+  { mapFrom: string; mapTo: boolean } | { mapFrom: Date; mapTo: string }
+  >;
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
