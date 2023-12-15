@@ -19,7 +19,28 @@
 
 /* _____________ Your Code Here _____________ */
 
-type CheckRepeatedChars<T extends string> = any
+type CheckRepeatedChars0<
+  T extends string,
+  Union extends string
+  = never,
+  RESULT =
+  T extends `${infer Head}${infer Tail }`
+  ? Head extends Union
+  ? true
+  : CheckRepeatedChars0<Tail, Head | Union>
+  : false
+  > = RESULT
+
+type CheckRepeatedChars<
+  T extends string> =
+  T extends `${infer Head}${infer Tail}`?
+  Tail extends `${string}${Head}${string}`?
+  true
+  : CheckRepeatedChars<Tail>
+  : false
+
+
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -31,6 +52,7 @@ type cases = [
   Expect<Equal<CheckRepeatedChars<'cbc'>, true>>,
   Expect<Equal<CheckRepeatedChars<''>, false>>,
 ]
+
 
 /* _____________ Further Steps _____________ */
 /*
