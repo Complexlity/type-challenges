@@ -18,7 +18,14 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Combination<T extends string[]> = any
+type Combination<
+  T extends string[],
+  All = T[number],
+  Item = All
+  > =
+  Item extends string
+  ? Item | `${Item} ${Combination<[], Exclude<All, Item>>}`
+  : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
