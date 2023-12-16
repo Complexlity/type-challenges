@@ -22,7 +22,13 @@
 
 /* _____________ Your Code Here _____________ */
 
-type GetMiddleElement<T> = any
+type GetMiddleElement<T extends unknown[]> =
+  T['length'] extends 2 | 1 | 0
+  ? T
+  : T extends [unknown, ...infer Middle, unknown] ?
+  GetMiddleElement<Middle>
+  : never
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
