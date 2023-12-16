@@ -1,3 +1,4 @@
+import type { Equal, Expect } from '../utils'
 /*
   9286 - FirstUniqueCharIndex
   -------
@@ -12,10 +13,24 @@
 
 /* _____________ Your Code Here _____________ */
 
-type FirstUniqueCharIndex<T extends string> = any
 
-/* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '../utils'
+
+type RepeatCharCount<T extends string, U extends string, N extends any[] = []> = U extends `${infer F}${infer E}`
+  ? T extends F
+    ? RepeatCharCount<T, E, [...N, '']>
+    : RepeatCharCount<T, E, [...N]>
+  : N['length']
+
+
+type FirstUniqueCharIndex<T extends string, N extends string[] = [], O extends string = T> = T extends `${infer F}${infer E}`
+  ? RepeatCharCount<F, O> extends 1
+    ? N['length']
+    : FirstUniqueCharIndex<E, [...N, ''], T>
+  : -1
+
+
+/* __________ Test Cases _____________ */
+
 
 type cases = [
   Expect<Equal<FirstUniqueCharIndex<'leetcode'>, 0>>,
