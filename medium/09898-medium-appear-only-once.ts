@@ -12,7 +12,38 @@
 
 /* _____________ Your Code Here _____________ */
 
-type FindEles<T extends any[]> = any
+type RemainingFromFront<T extends any[], U, Remaining extends any[] = []>
+  =
+  T extends [infer First, ...infer Rest]?
+  Equal<First, U> extends true ?
+    Remaining['length']
+  : RemainingFromFront<Rest, U, [...Remaining, First]>
+  : 0
+
+type p0 = RemainingFromFront<[1, 2, 3, 4,4, 5], 4>
+type p1 = RemainingFromBehind<[1, 2, 3, 4,4, 5], 4>
+//    ^?
+
+type RemainingFromBehind<T extends any[], U, Index extends 1[] = []> =
+  T extends [...infer First, infer Rest]
+  ? Equal<Rest, U> extends true
+  ? First['length']
+  : RemainingFromBehind<First, U, [...Index, 1]>
+  : 0
+
+
+
+type FindEles<
+  T extends any[],
+  Acc extends any[] = [],
+  Looper extends 1[] = [],
+> =
+  T['length'] extends Looper['length']
+  ? Acc
+  : RemainingFromFront<T, T[Looper['length']]> extends
+  RemainingFromBehind<T, T[Looper['length']]> ?
+  FindEles<T, [...Acc, T[Looper['length']]], [...Looper, 1]>
+  : FindEles<T, Acc, [...Looper, 1]>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
