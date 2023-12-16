@@ -1,5 +1,5 @@
 {
-  "name": "../utils",
+  "name": "type-challenges",
   "version": "0.1.1",
   "license": "MIT",
   "types": "index.d.ts",
@@ -11,5 +11,6 @@
   },
   "devDependencies": {
     "typescript": "^4.7.4"
-  }
+  },
+  "packageManager": "pnpm@8.7.6"
 }
