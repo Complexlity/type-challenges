@@ -22,7 +22,19 @@
 
 /* _____________ Your Code Here _____________ */
 
-type All = any
+type All<T extends any[], U extends any> =
+  T extends [infer First, ...infer Rest]?
+  Equal<First, U> extends true?
+  All<Rest, U>
+  : false
+  : true
+
+ // Fails last test
+type Nope0<T extends any[], U> =
+  Equal<T[number], U>
+
+  type n = Nope0<[1, 1, 2], 1 | 2> // Should be false
+//      ^?
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
