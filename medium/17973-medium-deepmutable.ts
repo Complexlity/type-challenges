@@ -54,7 +54,22 @@
 
 /* _____________ Your Code Here _____________ */
 
-type DeepMutable = any
+type DeepMutable0<T extends object> = {
+  -readonly [P in keyof T]: T[P] extends
+  (...args: any[]) => any
+  ? T[P]
+  : T[P] extends object
+  ? DeepMutable0<T[P]>
+  : T[P]
+}
+
+type DeepMutable<T extends Record<keyof any, any>> = T extends (
+  ...args: any[]
+) => any
+  ? T
+  : {
+      -readonly [K in keyof T]: DeepMutable<T[K]>;
+    };
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
@@ -126,6 +141,9 @@ type cases = [
   Expect<Equal<DeepMutable<Test2>, DeepMutableTest2>>,
 ]
 
+
+
+type y = DeepMutable<Test2>;
 type errors = [
   // @ts-expect-error
   DeepMutable<'string'>,
