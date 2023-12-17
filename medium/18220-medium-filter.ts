@@ -12,7 +12,24 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Filter<T extends any[], P> = []
+type Filter0<
+  T extends any[],
+  P,
+  Acc extends any[] = []
+    > =
+  T extends [infer Head, ...infer Rest] ?
+  Head extends P ?
+  Filter0<Rest, P, [...Acc, Head]>
+  : Filter0<Rest, P, Acc>
+  : Acc
+
+// Without any accumulator
+type Filter<T extends unknown[], P> =
+  T extends [infer Head, ...infer Rest]?
+  Head extends P?
+  [Head, ...Filter<Rest, P>]
+  : Filter<Rest, P>
+  : []
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
