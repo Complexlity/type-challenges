@@ -33,7 +33,34 @@
 
 /* _____________ Your Code Here _____________ */
 
-type CountElementNumberToObject<T> = any
+type Flatten<T extends any> =
+  T extends [infer Head, ... infer Tail]?
+  Head extends any[] ?
+  [...Flatten<Head>, ...Flatten<Tail>]
+  : [Head, ...Flatten<Tail>]
+  : []
+
+type CountOccurences<
+  T extends any[],
+  U extends any,
+  Count extends any[] = []
+> = T extends []
+  ? Count["length"]
+  : T extends [infer Head, ...infer Tail]
+  ? Equal<Head, U> extends true
+    ? CountOccurences<Tail, U, [...Count, 1]>
+    : CountOccurences<Tail, U, Count>
+  : never;
+
+type CountElementNumberToObject<
+  T extends any[],
+  > =
+  Flatten<T>  extends infer FlatT extends any[] ?
+  {
+    [P in FlatT[number]]: CountOccurences<FlatT, P>
+  }
+  : never
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
