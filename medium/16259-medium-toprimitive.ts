@@ -37,7 +37,16 @@
 
 /* _____________ Your Code Here _____________ */
 
-type ToPrimitive = any
+type ToPrimitive<T> =
+  T extends () => any ?
+  Function
+  : T extends object
+  ? {
+      [Key in keyof T]: ToPrimitive<T[Key]>;
+    }
+  : T extends { valueOf: () => infer P }
+  ? P
+  : T;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
