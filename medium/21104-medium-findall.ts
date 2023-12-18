@@ -12,7 +12,31 @@
 
 /* _____________ Your Code Here _____________ */
 
-type FindAll<T extends string, P extends string> = any
+type Contains<T extends string, U extends string> =
+  U extends ''
+  ? false
+  : T extends `${string}${U}${string}`
+  ? true
+  : false
+
+
+type _FindAll<
+  T extends string,
+  U extends string,
+  Current extends 1[] = [],
+Result extends number[] = []> =
+  T extends `${string}${infer Tail}`
+  ? T extends `${U}${string}`
+  ? _FindAll<Tail, U, [...Current, 1], [...Result, Current['length']]>
+  : _FindAll<Tail, U, [...Current, 1], Result>
+  :Result
+
+
+type FindAll<T extends string, U extends string> =
+  Contains<T, U> extends true
+  ? _FindAll<T, U>
+  : []
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '../utils'
